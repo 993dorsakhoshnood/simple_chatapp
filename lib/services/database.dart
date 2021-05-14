@@ -8,13 +8,10 @@ class DataBaseMethods {
   getUserByUsername(String username) async {
     var result = await FirebaseFirestore.instance
         .collection('users')
-        .where('name', isEqualTo: username)
+        .where('userName', isEqualTo: username)
         .get();
-    result.docs.forEach((res) {
-      print('=======' + res.data().toString());
-      
-      return res.data() ;
-    });
+
+    return result;
   }
 }
 

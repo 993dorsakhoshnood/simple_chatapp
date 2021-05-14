@@ -21,11 +21,11 @@ class _SearchState extends State<Search> {
       setState(() {
         isLoading = true;
       });
+     
       await databaseMethods
           .getUserByUsername(searchEditingController.text)
           .then((snapshot) {
         searchResultSnapshot = snapshot;
-        print('-----------------------' + "$searchResultSnapshot");
         setState(() {
           isLoading = false;
           haveUserSearched = true;
@@ -157,9 +157,9 @@ class _SearchState extends State<Search> {
                             // databaseMethods
                             //     .getUserByUsername(searchEditingController.text)
                             //     .then((value) {
-                            //   print('++++++++++++++++' + value.toString());
+
                             // });
-                          initiateSearch();
+                            initiateSearch();
                           },
                           child: Container(
                               height: 40,
