@@ -1,21 +1,60 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:utube_chatapp/services/auth.dart';
 import 'package:utube_chatapp/widgets/app_bar_widget.dart';
 
 class SignIn extends StatefulWidget {
+   final Function toggleView;
+   SignIn(this.toggleView);
   @override
   _SignInState createState() => _SignInState();
 }
 
 class _SignInState extends State<SignIn> {
-
   TextEditingController emailEditingController = new TextEditingController();
   TextEditingController passwordEditingController = new TextEditingController();
-   final formKey = GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>();
+
+  AuthMethods authService = new AuthMethods();
+
+  // signIn() async {
+  //   if (formKey.currentState.validate()) {
+  //     setState(() {
+  //       isLoading = true;
+  //     });
+
+  //     await authService
+  //         .signInWithEmailandPassword(
+  //             emailEditingController.text, passwordEditingController.text)
+  //         .then((result) async {
+  //       if (result != null)  {
+  //         QuerySnapshot userInfoSnapshot =
+  //             await DatabaseMethods().getUserInfo(emailEditingController.text);
+
+  //         HelperFunctions.saveUserLoggedInSharedPreference(true);
+  //         HelperFunctions.saveUserNameSharedPreference(
+  //             userInfoSnapshot.documents[0].data["userName"]);
+  //         HelperFunctions.saveUserEmailSharedPreference(
+  //             userInfoSnapshot.documents[0].data["userEmail"]);
+
+  //         Navigator.pushReplacement(
+  //             context, MaterialPageRoute(builder: (context) => ChatRoom()));
+  //       } else {
+  //         setState(() {
+  //           isLoading = false;
+  //           //show snackbar
+  //         });
+  //       }
+  //     });
+  //   }
+  // }
+
 
   bool isLoading = false;
   @override
   Widget build(BuildContext context) {
-     return Scaffold(
+    return Scaffold(
+      backgroundColor: Colors.black,
       appBar: appBarMain(context),
       body: isLoading
           ? Container(
@@ -84,7 +123,7 @@ class _SignInState extends State<SignIn> {
                   ),
                   GestureDetector(
                     onTap: () {
-                     // signIn();
+                      // signIn();
                     },
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 16),
@@ -115,10 +154,10 @@ class _SignInState extends State<SignIn> {
                     width: MediaQuery.of(context).size.width,
                     child: Text(
                       "Sign In with Google",
-                      style:
-                          TextStyle(fontSize: 17, 
-                          //color: CustomTheme.textColor
-                          ),
+                      style: TextStyle(
+                        fontSize: 17,
+                        //color: CustomTheme.textColor
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -134,7 +173,7 @@ class _SignInState extends State<SignIn> {
                       ),
                       GestureDetector(
                         onTap: () {
-                        //  widget.toggleView();
+                         widget.toggleView();
                         },
                         child: Text(
                           "Register now",
