@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "300647239764",
+    "project_id": "maplechatapp",
+    "storage_bucket": "maplechatapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:300647239764:android:396519b910dc0b61781dc1",
+        "android_client_info": {
+          "package_name": "com.example.utube_chatapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "300647239764-ggb5cftfv9086arp93b4p589b02vf0ke.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDV1rOvEKIGr17F2hbD8wVw4vaFX0CZPw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "300647239764-ggb5cftfv9086arp93b4p589b02vf0ke.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
