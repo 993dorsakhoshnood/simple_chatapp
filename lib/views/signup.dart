@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:utube_chatapp/helper/helper_functions.dart';
 import 'package:utube_chatapp/services/auth.dart';
 import 'package:utube_chatapp/services/database.dart';
 import 'package:utube_chatapp/widgets/app_bar_widget.dart';
@@ -6,8 +7,8 @@ import 'package:utube_chatapp/widgets/app_bar_widget.dart';
 import 'chat_rooms_screen.dart';
 
 class SignUp extends StatefulWidget {
-   final Function toggleView;
-   SignUp(this.toggleView);
+  final Function toggleView;
+  SignUp(this.toggleView);
 
   @override
   _SignUpState createState() => _SignUpState();
@@ -19,7 +20,7 @@ class _SignUpState extends State<SignUp> {
   TextEditingController usernameEditingController = new TextEditingController();
 
   AuthMethods authService = AuthMethods();
-  DataBaseMethods databaseMethods = new DataBaseMethods();
+  DataBaseMethods databaseMethods = DataBaseMethods();
 
   final formKey = GlobalKey<FormState>();
   bool isLoading = false;
@@ -39,8 +40,15 @@ class _SignUpState extends State<SignUp> {
             "userName": usernameEditingController.text,
             "userEmail": emailEditingController.text
           };
+           HelperFunction.saveUserEmailSharedPerefrence(
+              emailEditingController.text);
+          HelperFunction.saveUsernameSharedPerefrence(
+              usernameEditingController.text);
 
-           databaseMethods.uploadUserInfo(userDataMap);
+          databaseMethods.uploadUserInfo(userDataMap);
+
+          HelperFunction.saveUserLoggedInSharedPerefrence(true);
+         
 
           // HelperFunctions.saveUserLoggedInSharedPreference(true);
           // HelperFunctions.saveUserNameSharedPreference(
@@ -48,8 +56,8 @@ class _SignUpState extends State<SignUp> {
           // HelperFunctions.saveUserEmailSharedPreference(
           //     emailEditingController.text);
 
-           Navigator.pushReplacement(
-             context, MaterialPageRoute(builder: (context) => ChatRoom()));
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => ChatRoom()));
         }
       });
     }
@@ -165,7 +173,7 @@ class _SignUpState extends State<SignUp> {
                       ),
                       GestureDetector(
                         onTap: () {
-                            widget.toggleView();
+                          widget.toggleView();
                         },
                         child: Text(
                           "SignIn now",

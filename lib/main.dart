@@ -1,10 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:utube_chatapp/helper/helper_functions.dart';
+import 'package:utube_chatapp/views/chat_rooms_screen.dart';
 import 'package:utube_chatapp/views/signup.dart';
 
 import 'helper/authenticate.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MyApp());
@@ -16,22 +18,21 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  bool userIsLoggedIn;
 
-  // bool userIsLoggedIn;
+  @override
+  void initState() {
+    getLoggedInState();
+    super.initState();
+  }
 
-  // @override
-  // void initState() {
-  //   getLoggedInState();
-  //   super.initState();
-  // }
-
-  // getLoggedInState() async {
-  //   await HelperFunctions.getUserLoggedInSharedPreference().then((value){
-  //     setState(() {
-  //       userIsLoggedIn  = value;
-  //     });
-  //   });
-  // }
+  getLoggedInState() async {
+    await HelperFunction.getUserLoggedInSharedPerefrence().then((value) {
+      setState(() {
+        userIsLoggedIn = value;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,14 +46,15 @@ class _MyAppState extends State<MyApp> {
         fontFamily: "OverpassRegular",
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home:
-      Authenticate()
-      //  userIsLoggedIn != null ?  userIsLoggedIn ? ChatRoom() : Authenticate()
-      //     : Container(
-      //   child: Center(
-      //     child: Authenticate(),
-      //   ),
-      // ),
+      home: userIsLoggedIn != null
+          ? userIsLoggedIn
+              ? ChatRoom()
+              : Authenticate()
+          : Container(
+              child: Center(
+                child: Authenticate(),
+              ),
+            ),
     );
   }
 }

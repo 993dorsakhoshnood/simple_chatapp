@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:utube_chatapp/helper/constants.dart';
 import 'package:utube_chatapp/services/database.dart';
 import 'package:utube_chatapp/widgets/app_bar_widget.dart';
+
+import 'conversation_screen.dart';
 
 class Search extends StatefulWidget {
   @override
@@ -16,58 +19,32 @@ class _SearchState extends State<Search> {
   bool isLoading = false;
   bool haveUserSearched = false;
 
-  initiateSearch() async {
-    if (searchEditingController.text.isNotEmpty) {
-      setState(() {
-        isLoading = true;
-      });
-     
-      await databaseMethods
-          .getUserByUsername(searchEditingController.text)
-          .then((snapshot) {
-        searchResultSnapshot = snapshot;
-        setState(() {
-          isLoading = false;
-          haveUserSearched = true;
-        });
-      });
+  sendMessage({String userName}) {
+    if (userName != Constants.myName) {
+      String chatroomId = getChatRoomId(userName, Constants.myName);
+      List<String> users = [userName, Constants.myName];
+      Map<String, dynamic> chatroomMap = {
+        'users': users,
+        'chatroomId': chatroomId
+      };
+       
+      DataBaseMethods().createChatRoom(chatroomId, chatroomMap);
+ 
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => Chat(  chatRoomId: chatroomId,)
+                
+                  ));
+    } else {
+      print('u cant send message to urself');
     }
   }
 
-  Widget userList() {
-    return haveUserSearched
-        ? ListView.builder(
-            shrinkWrap: true,
-            itemCount: searchResultSnapshot.docs.length,
-            itemBuilder: (context, index) {
-              return userTile(
-                searchResultSnapshot.docs[index]["userName"],
-                searchResultSnapshot.docs[index]["userEmail"],
-              );
-            })
-        : Container();
+  @override
+  void initState() {
+    super.initState();
   }
-
-  /// 1.create a chatroom, send user to the chatroom, other userdetails
-  // sendMessage(String userName){
-  //   List<String> users = [Constants.myName,userName];
-
-  //   String chatRoomId = getChatRoomId(Constants.myName,userName);
-
-  //   Map<String, dynamic> chatRoom = {
-  //     "users": users,
-  //     "chatRoomId" : chatRoomId,
-  //   };
-
-  //   databaseMethods.addChatRoom(chatRoom, chatRoomId);
-
-  //   Navigator.push(context, MaterialPageRoute(
-  //     builder: (context) => Chat(
-  //       chatRoomId: chatRoomId,
-  //     )
-  //   ));
-
-  // }
 
   Widget userTile(String userName, String userEmail) {
     //searchTile
@@ -90,9 +67,9 @@ class _SearchState extends State<Search> {
           ),
           Spacer(),
           GestureDetector(
-            // onTap: (){
-            //   sendMessage(userName);
-            // },
+            onTap: () {
+              sendMessage(userName: userName);
+            },
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
@@ -106,19 +83,6 @@ class _SearchState extends State<Search> {
         ],
       ),
     );
-  }
-
-  getChatRoomId(String a, String b) {
-    if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
-      return "$b\_$a";
-    } else {
-      return "$a\_$b";
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
   }
 
   @override
@@ -154,11 +118,6 @@ class _SearchState extends State<Search> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            // databaseMethods
-                            //     .getUserByUsername(searchEditingController.text)
-                            //     .then((value) {
-
-                            // });
                             initiateSearch();
                           },
                           child: Container(
@@ -188,5 +147,45 @@ class _SearchState extends State<Search> {
               ),
             ),
     );
+  }
+
+  initiateSearch() async {
+    if (searchEditingController.text.isNotEmpty) {
+      setState(() {
+        isLoading = true;
+      });
+
+      await databaseMethods
+          .getUserByUsername(searchEditingController.text)
+          .then((snapshot) {
+        searchResultSnapshot = snapshot;
+        setState(() {
+          isLoading = false;
+          haveUserSearched = true;
+        });
+      });
+    }
+  }
+
+  Widget userList() {
+    return haveUserSearched
+        ? ListView.builder(
+            shrinkWrap: true,
+            itemCount: searchResultSnapshot.docs.length,
+            itemBuilder: (context, index) {
+              return userTile(
+                searchResultSnapshot.docs[index]["userName"],
+                searchResultSnapshot.docs[index]["userEmail"],
+              );
+            })
+        : Container();
+  }
+}
+
+getChatRoomId(String a, String b) {
+  if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
+    return "$b\_$a";
+  } else {
+    return "$a\_$b";
   }
 }

@@ -1,11 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:utube_chatapp/helper/helper_functions.dart';
 import 'package:utube_chatapp/services/auth.dart';
+import 'package:utube_chatapp/services/database.dart';
 import 'package:utube_chatapp/widgets/app_bar_widget.dart';
 
+import 'chat_rooms_screen.dart';
+
 class SignIn extends StatefulWidget {
-   final Function toggleView;
-   SignIn(this.toggleView);
+  final Function toggleView;
+  SignIn(this.toggleView);
   @override
   _SignInState createState() => _SignInState();
 }
@@ -14,43 +18,40 @@ class _SignInState extends State<SignIn> {
   TextEditingController emailEditingController = new TextEditingController();
   TextEditingController passwordEditingController = new TextEditingController();
   final formKey = GlobalKey<FormState>();
+  DataBaseMethods dataBaseMethods = DataBaseMethods();
 
   AuthMethods authService = new AuthMethods();
-
-  // signIn() async {
-  //   if (formKey.currentState.validate()) {
-  //     setState(() {
-  //       isLoading = true;
-  //     });
-
-  //     await authService
-  //         .signInWithEmailandPassword(
-  //             emailEditingController.text, passwordEditingController.text)
-  //         .then((result) async {
-  //       if (result != null)  {
-  //         QuerySnapshot userInfoSnapshot =
-  //             await DatabaseMethods().getUserInfo(emailEditingController.text);
-
-  //         HelperFunctions.saveUserLoggedInSharedPreference(true);
-  //         HelperFunctions.saveUserNameSharedPreference(
-  //             userInfoSnapshot.documents[0].data["userName"]);
-  //         HelperFunctions.saveUserEmailSharedPreference(
-  //             userInfoSnapshot.documents[0].data["userEmail"]);
-
-  //         Navigator.pushReplacement(
-  //             context, MaterialPageRoute(builder: (context) => ChatRoom()));
-  //       } else {
-  //         setState(() {
-  //           isLoading = false;
-  //           //show snackbar
-  //         });
-  //       }
-  //     });
-  //   }
-  // }
-
-
   bool isLoading = false;
+  signIn() async {
+    if (formKey.currentState.validate()) {
+      setState(() {
+        isLoading = true;
+      });
+
+      await authService
+          .signInWithEmailandPassword(
+              emailEditingController.text, passwordEditingController.text)
+          .then((result) async {
+        if (result != null) { 
+          QuerySnapshot userInfoSnapshot = await dataBaseMethods
+              .getUserByUserEmail(emailEditingController.text);
+          HelperFunction.saveUsernameSharedPerefrence(
+              userInfoSnapshot.docs[0].data()['userName']);
+          HelperFunction.saveUserEmailSharedPerefrence(
+              userInfoSnapshot.docs[0].data()['userEmail']);
+          HelperFunction.saveUserLoggedInSharedPerefrence(true);
+
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => ChatRoom()));
+        } else {
+          setState(() {
+            isLoading = false;
+          });
+        }
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,7 +85,7 @@ class _SignInState extends State<SignIn> {
                         TextFormField(
                           obscureText: true,
                           validator: (val) {
-                            return val.length > 6
+                            return val.length > 5
                                 ? null
                                 : "Enter Password 6+ characters";
                           },
@@ -123,7 +124,7 @@ class _SignInState extends State<SignIn> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      // signIn();
+                      signIn();
                     },
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 16),
@@ -173,7 +174,7 @@ class _SignInState extends State<SignIn> {
                       ),
                       GestureDetector(
                         onTap: () {
-                         widget.toggleView();
+                          widget.toggleView();
                         },
                         child: Text(
                           "Register now",

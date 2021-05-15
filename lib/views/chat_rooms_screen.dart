@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:utube_chatapp/helper/authenticate.dart';
+import 'package:utube_chatapp/helper/constants.dart';
+import 'package:utube_chatapp/helper/helper_functions.dart';
 import 'package:utube_chatapp/services/auth.dart';
+import 'package:utube_chatapp/services/database.dart';
 import 'package:utube_chatapp/views/search.dart';
 
 class ChatRoom extends StatefulWidget {
@@ -35,10 +38,18 @@ class _ChatRoomState extends State<ChatRoom> {
 
   @override
   void initState() {
-    //getUserInfogetChats();
+    getUserInfo();
     super.initState();
   }
 
+  getUserInfo() async {
+     Constants.myName = await HelperFunction.getUsernameSharedPerefrence();
+    setState(() {
+      
+    });
+   
+
+  }
   // getUserInfogetChats() async {
   //   Constants.myName = await HelperFunctions.getUserNameSharedPreference();
   //   DatabaseMethods().getUserChats(Constants.myName).then((snapshots) {
