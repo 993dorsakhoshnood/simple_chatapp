@@ -39,9 +39,10 @@ class _ChatState extends State<Chat> {
 
   sendMessage() {
     if (messageEditingController.text.isNotEmpty) {
-      Map<String, String> messageMap = {
+      Map<String, dynamic> messageMap = {
         'message': messageEditingController.text,
-        'sendBy': Constants.myName
+        'sendBy': Constants.myName,
+        'time':DateTime.now().millisecondsSinceEpoch
       };
       dataBaseMethods.addConversationMessages(widget.chatRoomId, messageMap);
       messageEditingController.text = '';

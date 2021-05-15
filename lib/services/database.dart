@@ -44,11 +44,19 @@ class DataBaseMethods {
     });
   }
 
-  getConversationMessages(String chatroomId) async{
-   return await FirebaseFirestore.instance
+  getConversationMessages(String chatroomId) async {
+    return await FirebaseFirestore.instance
         .collection('ChatRoom')
         .doc(chatroomId)
         .collection('chats')
+        .orderBy('time', descending: false)
+        .snapshots();
+  }
+
+  getChatRoom(String userName) async{
+    return await FirebaseFirestore.instance
+        .collection('ChatRoom')
+        .where('users', arrayContains: userName)
         .snapshots();
   }
 }
